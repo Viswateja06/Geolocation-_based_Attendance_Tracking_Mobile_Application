@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subject Attendance | GeoAttendance</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    .sa-container { margin-top: 16px; }
+    .sa-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .sa-date { font-weight:600; }
+    .sa-table { width:100%; border-collapse:collapse; background:#fff; }
+    .sa-table { width:100%; border-collapse:collapse; background:#fff; margin-top: 10px; }
+    .sa-table th, .sa-table td { border:1px solid #e5e7eb; padding:8px; font-size:13px; text-align:left; }
+    .sa-status-select { width:100%; padding:4px; font-size:13px; }
+    .current-slot { background-color: #f0f9ff; font-weight: bold; }
+    .tt-slot-break { background-color: #e0f2fe; text-align: center; }
+    .tt-slot-lunch { background-color: #fef3c7; text-align: center; }
+  </style>
+  <script>
+    function toast(msg, type='info'){
+      const t=document.getElementById('toast');
+      t.textContent=msg;
+      t.className='toast show '+type;
+      setTimeout(()=>t.classList.remove('show'),2500);
+    }
+
+    // Define the weekly schedule
+    const weeklySchedule = {
+      'Monday': [
+        { subject: 'NLP', time: '9:00 - 9:50' },
+        { subject: 'DBMS', time: '9:50 - 10:40' },
+        { subject: 'Break', time: '10:40 - 10:50', isBreak: true },
+        { subject: 'Java Full Stack', time: '10:50 - 11:40' },
+        { subject: 'Python', time: '11:40 - 12:30' },
+        { subject: 'Lunch', time: '12:30 - 1:20', isLunch: true },
+        { subject: 'Cloud Security', time: '1:20 - 2:10' },
+        { subject: 'Break', time: '2:10 - 2:20', isBreak: true },
+        { subject: 'Generative AI', time: '2:20 - 3:10' },
+        { subject: 'Maths M1', time: '3:10 - 4:00' }
+      ],
+      'Tuesday': [
+        { subject: 'DBMS', time: '9:00 - 9:50' },
+        { subject: 'Java Full Stack', time: '9:50 - 10:40' },
+        { subject: 'Break', time: '10:40 - 10:50', isBreak: true },
+        { subject: 'Python', time: '10:50 - 11:40' },
+        { subject: 'NLP', time: '11:40 - 12:30' },
+        { subject: 'Lunch', time: '12:30 - 1:20', isLunch: true },
+        { subject: 'Generative AI', time: '1:20 - 2:10' },
+        { subject: 'Break', time: '2:10 - 2:20', isBreak: true },
+        { subject: 'Maths M1', time: '2:20 - 3:10' },
+        { subject: 'Cloud Security', time: '3:10 - 4:00' }
+      ],
+      'Wednesday': [
+        { subject: 'Java Full Stack', time: '9:00 - 9:50' },
+        { subject: 'Python', time: '9:50 - 10:40' },
+        { subject: 'Break', time: '10:40 - 10:50', isBreak: true },
+        { subject: 'DBMS', time: '10:50 - 11:40' },
+        { subject: 'Cloud Security', time: '11:40 - 12:30' },
+        { subject: 'Lunch', time: '12:30 - 1:20', isLunch: true },
+        { subject: 'Maths M1', time: '1:20 - 2:10' },
+        { subject: 'Break', time: '2:10 - 2:20', isBreak: true },
+        { subject: 'NLP', time: '2:20 - 3:10' },
+        { subject: 'Generative AI', time: '3:10 - 4:00' }
+      ],
+      'Thursday': [
+        { subject: 'Python', time: '9:00 - 9:50' },
+        { subject: 'NLP', time: '9:50 - 10:40' },
+        { subject: 'Break', time: '10:40 - 10:50', isBreak: true },
+        { subject: 'Generative AI', time: '10:50 - 11:40' },
+        { subject: 'DBMS', time: '11:40 - 12:30' },
+        { subject: 'Lunch', time: '12:30 - 1:20', isLunch: true },
+        { subject: 'Java Full Stack', time: '1:20 - 2:10' },
+        { subject: 'Break', time: '2:10 - 2:20', isBreak: true },
+        { subject: 'Cloud Security', time: '2:20 - 3:10' },
+        { subject: 'Maths M1', time: '3:10 - 4:00' }
+      ],
+      'Friday': [
+        { subject: 'Cloud Security', time: '9:00 - 9:50' },
+        { subject: 'Generative AI', time: '9:50 - 10:40' },
+        { subject: 'Break', time: '10:40 - 10:50', isBreak: true },
+        { subject: 'Maths M1', time: '10:50 - 11:40' },
+        { subject: 'Java Full Stack', time: '11:40 - 12:30' },
+        { subject: 'Lunch', time: '12:30 - 1:20', isLunch: true },
+        { subject: 'Python', time: '1:20 - 2:10' },
+        { subject: 'Break', time: '2:10 - 2:20', isBreak: true },
+        { subject: 'DBMS', time: '2:20 - 3:10' },
+        { subject: 'NLP', time: '3:10 - 4:00' }
+      ]
+    };
+
+    // Get current day of week
+    function getCurrentDay() {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const now = new Date();
+      return days[now.getDay()];
+    }
+
+    // Check if current time is within a time slot
+    function isCurrentTimeInSlot(slotTime) {
+      const now = new Date();
+      const [startTime, endTime] = slotTime.split(' - ');
+      
+      const [startH, startM] = startTime.split(':').map(Number);
+      const [endH, endM] = endTime.split(':').map(Number);
+      
+      const currentH = now.getHours();
+      const currentM = now.getMinutes();
+      
+      const currentTotal = currentH * 60 + currentM;
+      const startTotal = startH * 60 + startM;
+      const endTotal = endH * 60 + endM;
+      
+      return currentTotal >= startTotal && currentTotal <= endTotal;
+    }
+
+    function isWithinAttendanceWindow(slotTime, date) {
+      const now = new Date();
+      if (now.toDateString() !== date.toDateString()) return false;
+      const [startTime, endTime] = slotTime.split(' - ');
+      const [startH, startM] = startTime.split(':').map(Number);
+      const windowStartTotal = (startH * 60 + startM);
+      const windowEndTotal = windowStartTotal + 10; // start to start+10 minutes
+      const currentTotal = now.getHours() * 60 + now.getMinutes();
+      return currentTotal >= windowStartTotal && currentTotal <= windowEndTotal;
+    }
+
+    let currentDate = new Date();
+    
+    // Parse date from URL if available
+    function getDateFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const dateParam = urlParams.get('date');
+      return dateParam ? new Date(dateParam) : new Date();
+    }
+    
+    function updateUrl(date) {
+      const dateStr = date.toISOString().split('T')[0];
+      const newUrl = `${window.location.pathname}?date=${dateStr}`;
+      window.history.pushState({ date: dateStr }, '', newUrl);
+    }
+    
+    function formatDate(date) {
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('en-IN', options);
+    }
+    
+    function isWeekend(date) {
+      const day = date.getDay();
+      return day === 0 || day === 6; // 0 is Sunday, 6 is Saturday
+    }
+    
+    function getDayName(date) {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      return days[date.getDay()];
+    }
+
+    function getSaStorageKey(dateStr, subject, hourIndex) {
+      return `sa:${dateStr}:${hourIndex}:${subject}`;
+    }
+
+    function loadSlotStatus(dateStr, subject, hourIndex) {
+      try {
+        const key = getSaStorageKey(dateStr, subject, hourIndex);
+        return localStorage.getItem(key) || 'Not Marked';
+      } catch {
+        return 'Not Marked';
+      }
+    }
+
+    function saveSlotStatus(dateStr, subject, hourIndex, value) {
+      try {
+        const key = getSaStorageKey(dateStr, subject, hourIndex);
+        localStorage.setItem(key, value);
+      } catch {}
+    }
+
+    async function sendSubjectAttendanceToServer(dateStr, subject) {
+      let token = null;
+      try {
+        token = localStorage.getItem('studentToken');
+      } catch {}
+      if (!token) return;
+      
+      try {
+        // First check if student is currently checked in
+        const statusResponse = await fetch('/student/status', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (statusResponse.ok) {
+          const status = await statusResponse.json();
+          if (!status.isCurrentlyCheckedIn) {
+            toast('You must be checked in to mark attendance', 'error');
+            // Reset the select to "Not Marked"
+            const select = document.querySelector(`.sa-status-select[data-subject="${subject}"]`);
+            if (select) {
+              select.value = 'Not Marked';
+            }
+            return;
+          }
+        }
+        
+        // If checked in, proceed to mark attendance
+        const response = await fetch('/student/subject_attendance', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ date: dateStr, subject })
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          toast('Attendance marked as Present', 'success');
+        } else {
+          const error = await response.json();
+          toast(error.error || 'Failed to mark attendance', 'error');
+          // Reset the select to "Not Marked"
+          const select = document.querySelector(`.sa-status-select[data-subject="${subject}"]`);
+          if (select) {
+            select.value = 'Not Marked';
+          }
+        }
+      } catch (e) {
+        toast('Error marking attendance', 'error');
+        // Reset the select to "Not Marked"
+        const select = document.querySelector(`.sa-status-select[data-subject="${subject}"]`);
+        if (select) {
+          select.value = 'Not Marked';
+        }
+      }
+    }
+
+    function initSubjectAttendance() {
+      // Initialize current date from URL or use today's date
+      currentDate = getDateFromUrl();
+      
+      // Update URL with current date
+      updateUrl(currentDate);
+      
+      // Set up navigation buttons
+      document.getElementById('prevDay').addEventListener('click', () => {
+        const prevDate = new Date(currentDate);
+        prevDate.setDate(prevDate.getDate() - 1);
+        window.location.href = `${window.location.pathname}?date=${prevDate.toISOString().split('T')[0]}`;
+      });
+      
+      document.getElementById('nextDay').addEventListener('click', () => {
+        const nextDate = new Date(currentDate);
+        nextDate.setDate(nextDate.getDate() + 1);
+        window.location.href = `${window.location.pathname}?date=${nextDate.toISOString().split('T')[0]}`;
+      });
+      const todayEl = document.getElementById('saDate');
+      const tbody = document.querySelector('.sa-table tbody');
+      
+      // Format and display the current date
+      todayEl.textContent = formatDate(currentDate);
+      
+      // Clear any existing content
+      tbody.innerHTML = '';
+      
+      // Check if it's a weekend
+      if (isWeekend(currentDate)) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td colspan="4" style="text-align: center; padding: 20px; color: #666; font-style: italic;">
+            No classes scheduled for today. Enjoy your weekend! 🎉
+          </td>
+        `;
+        tbody.appendChild(row);
+        return; // Exit the function early
+      }
+      
+      const currentDay = getDayName(currentDate);
+      const daySchedule = weeklySchedule[currentDay] || [];
+      const dateKey = currentDate.toISOString().split('T')[0];
+      
+      // Add a note if viewing past or future dates
+      const now = new Date();
+      const isToday = currentDate.toDateString() === now.toDateString();
+      const isFutureDate = currentDate > now;
+      const isPastDate = currentDate < new Date(now.setHours(0, 0, 0, 0));
+      
+      if (!isToday) {
+        const infoRow = document.createElement('tr');
+        const infoCell = document.createElement('td');
+        infoCell.colSpan = 4;
+        infoCell.style.textAlign = 'center';
+        infoCell.style.padding = '10px';
+        infoCell.style.backgroundColor = isFutureDate ? '#e8f5e9' : '#fff3e0';
+        infoCell.style.color = isFutureDate ? '#2e7d32' : '#e65100';
+        infoCell.textContent = isFutureDate 
+          ? 'Viewing future date - Attendance marking will be available on the day' 
+          : 'Viewing past date - Attendance is read-only';
+        infoRow.appendChild(infoCell);
+        tbody.appendChild(infoRow);
+      }
+      
+      daySchedule.forEach((slot, index) => {
+        const row = document.createElement('tr');
+        const isCurrent = isCurrentTimeInSlot(slot.time);
+        const hourIndex = index + 1;
+        const savedStatus = slot.isBreak || slot.isLunch ? 'Not Marked' : loadSlotStatus(dateKey, slot.subject, hourIndex);
+        const withinWindow = isWithinAttendanceWindow(slot.time, currentDate);
+        
+        if (isCurrent) {
+          row.classList.add('current-slot');
+        }
+        
+        if (slot.isBreak) {
+          row.innerHTML = `
+            <td colspan="4" class="tt-slot-break" style="text-align: center;">${slot.subject} (${slot.time})</td>
+          `;
+        } else if (slot.isLunch) {
+          row.innerHTML = `
+            <td colspan="4" class="tt-slot-lunch" style="text-align: center;">${slot.subject} (${slot.time})</td>
+          `;
+        } else if (savedStatus === 'Present') {
+          row.innerHTML = `
+            <td>Hour ${hourIndex}</td>
+            <td>${slot.subject}</td>
+            <td>${slot.time}</td>
+            <td>
+              <select class="sa-status-select" data-subject="${slot.subject}" data-hour="${hourIndex}" disabled>
+                <option>Not Marked</option>
+                <option selected>Present</option>
+              </select>
+            </td>
+          `;
+        } else {
+          // Always show dropdown, but disable if out of window or not today
+          const isDisabled = (!withinWindow || !isToday) ? 'disabled' : '';
+          const outOfWindowMsg = (!withinWindow && isToday) ? ' (Out of time window)' : '';
+          row.innerHTML = `
+            <td>Hour ${hourIndex}</td>
+            <td>${slot.subject}</td>
+            <td>${slot.time}</td>
+            <td>
+              <select class="sa-status-select" data-subject="${slot.subject}" data-hour="${hourIndex}" ${isDisabled}>
+                <option selected>Not Marked</option>
+                <option>Present</option>
+              </select>
+              ${outOfWindowMsg ? '<span style="color:#b91c1c; font-size:12px; margin-left:5px;">Out of time window</span>' : ''}
+            </td>
+          `;
+        }
+        
+        tbody.appendChild(row);
+      });
+      
+      // Add event listeners to the select elements
+      document.querySelectorAll('.sa-status-select').forEach(select => {
+        select.addEventListener('change', async function() {
+          const subject = this.getAttribute('data-subject');
+          const hourIndex = parseInt(this.getAttribute('data-hour') || '0', 10);
+          
+          // Don't allow changes if already marked as Present
+          if (this.disabled) {
+            return;
+          }
+          
+          // Check if it's within the 10-minute window
+          const slot = daySchedule[hourIndex - 1];
+          const withinWindow = isWithinAttendanceWindow(slot.time, currentDate);
+          
+          if (this.value === 'Present') {
+            if (!withinWindow || !isToday) {
+              toast('Cannot mark attendance: Out of 10-minute window', 'error');
+              // Reset to "Not Marked"
+              this.value = 'Not Marked';
+              return;
+            }
+            
+            saveSlotStatus(dateKey, subject, hourIndex, this.value);
+            await sendSubjectAttendanceToServer(dateKey, subject);
+            toast('Attendance marked as Present', 'success');
+            this.disabled = true;
+          } else {
+            saveSlotStatus(dateKey, subject, hourIndex, this.value);
+          }
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initSubjectAttendance);
+  </script>
+</head>
+<body>
+  <div class="stage">
+    <div class="panel">
+      <div class="header">
+        <h1>Subject-wise Attendance</h1>
+        <div class="header-actions">
+          <button class="btn" type="button" onclick="window.history.back()">Back to Student Page</button>
+        </div>
+      </div>
+
+    <div class="card grid sa-container">
+      <div class="tt-header">
+        <div>
+          <div class="muted">Presidency University, Bengaluru</div>
+          <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px;">
+            <button id="prevDay" class="btn" style="padding: 5px 10px;">◀ Previous Day</button>
+            <div id="saDate" class="muted" style="min-width: 200px; text-align: center;">Loading date...</div>
+            <button id="nextDay" class="btn" style="padding: 5px 10px;">Next Day ▶</button>
+          </div>
+        </div>
+    </div>
+
+    <div class="card grid sa-container">
+      <div class="sa-header">
+        <div>
+          <div class="muted">Presidency University, Bengaluru</div>
+            <div class="muted">Presidency University, Bengaluru</div>
+            <div class="sa-date">Date: <span id="saDate"></span></div>
+          </div>
+        </div>
+
+        <table class="sa-table">
+          <thead>
+            <tr>
+              <th>Hour</th>
+              <th>Subject</th>
+              <th>Time</th>
+              <th>Attendance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Schedule will be dynamically populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</body>
+</html>

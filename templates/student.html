@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student | GeoAttendance</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script>
+    function toast(msg, type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>t.classList.remove('show'),2500);}  
+  </script>
+</head>
+<body>
+  <div class="stage">
+    <div class="panel">
+      <div class="hero">
+        <div class="hero-illus">
+          <div class="illus-box">Student</div>
+          <div>
+            <h2>Track your attendance</h2>
+            <p>Use your campus location to check in and check out. View your daily status and history.</p>
+          </div>
+        </div>
+        <div id="authCard" class="auth-card grid">
+          <div class="auth-title">Login to your account</div>
+          <div>
+            <label for="loginName">Email / Name</label>
+            <input type="text" id="loginName" placeholder="E.g me@kuc.com.edu" />
+          </div>
+          <div>
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Password" />
+          </div>
+          <div class="row">
+            <button class="btn btn-primary" id="loginBtn">Login</button>
+          </div>
+          <div class="row">
+            <a class="btn" id="newUserBtn" href="/student/register">New User</a>
+          </div>
+        </div>
+      </div>
+
+      <div id="dash" class="grid" style="display:none;">
+        <!-- Top nav bar (only visible on dashboard) -->
+        <div class="row" style="justify-content: flex-end; margin-bottom: 16px; gap: 8px;">
+          <a href="/timetable" class="btn btn-secondary" style="text-decoration:none; color:black;">Timetable</a>
+          <a href="/subject-attendance" class="btn btn-secondary" style="text-decoration:none; color:black;">Subject Attendance</a>
+          <button class="btn btn-secondary" id="viewHistoryBtn">History</button>
+        </div>
+
+        <div class="card grid">
+          <div class="row" style="justify-content: space-between; align-items: center;">
+            <div>
+              <div class="muted">Logged in as</div>
+              <div id="studentName">-</div>
+            </div>
+            <button class="btn" id="logoutBtn">Logout</button>
+          </div>
+        </div>
+
+
+        <div class="card grid">
+          <div class="row">
+            <button class="btn" id="getLocationBtn">Use Current Location</button>
+            <span class="muted" id="locText">Waiting for location...</span>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-primary" id="checkInBtn">Check In</button>
+            <button class="btn btn-secondary" id="checkOutBtn">Check Out</button>
+            <span class="badge" id="statusBadge">-</span>
+          </div>
+        </div>
+
+        <div class="card grid">
+          <h3>Today's Status</h3>
+          <div id="todayStatus" class="status-container">-</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/static/student.js"></script>
+</body>
+</html>

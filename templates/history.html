@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance History | GeoAttendance</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script>
+    function toast(msg, type='info'){ 
+      const t=document.getElementById('toast'); 
+      t.textContent=msg; 
+      t.className='toast show '+type; 
+      setTimeout(()=>t.classList.remove('show'),2500);
+    }
+  </script>
+</head>
+<body>
+  <div class="stage">
+    <div class="panel">
+      <div class="header">
+        <h1>Attendance History</h1>
+        <div class="header-actions">
+          <button class="btn" type="button" onclick="window.history.back()">Back to Student Page</button>
+          <button class="btn" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <div class="card grid">
+        <div class="date-range">
+          <div class="date-input">
+            <label for="histStart">Start Date</label>
+            <input type="date" id="histStart" class="form-control" />
+          </div>
+          <div class="date-input">
+            <label for="histEnd">End Date</label>
+            <input type="date" id="histEnd" class="form-control" />
+          </div>
+          <button class="btn btn-primary" id="loadHistoryBtn">Load History</button>
+        </div>
+        <div id="historyList" class="history-container">Loading history...</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/static/history.js"></script>
+</body>
+</html>

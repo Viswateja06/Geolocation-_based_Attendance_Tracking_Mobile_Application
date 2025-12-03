@@ -1,0 +1,37 @@
+# Git Upload Instructions
+
+## Step 1: Install Git (if not already installed)
+Download from: https://git-scm.com/download/win
+
+## Step 2: Open terminal in project folder and run these commands:
+
+# Initialize git repository
+git init
+
+# Add all files to git
+git add .
+
+# Create initial commit
+git commit -m "Initial commit: Geolocation-based Attendance Tracking System"
+
+# Add remote repository
+git remote add origin https://github.com/Viswateja06/Geolocation-based-Attendance-Tracking-Mobile-Application.git
+
+# Push to GitHub (you'll be prompted for username and password/token)
+git push -u origin main
+
+# Note: If the default branch is 'master' instead of 'main', use:
+# git push -u origin master
+
+## Alternative: If you get authentication errors, use:
+git push -u origin main --force
+
+## Files to exclude (create .gitignore):
+__pycache__/
+*.pyc
+venv/
+instance/
+*.db
+.env
+.DS_Store
+*.log

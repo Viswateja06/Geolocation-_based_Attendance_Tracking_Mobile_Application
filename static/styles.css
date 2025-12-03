@@ -1,0 +1,199 @@
+* { box-sizing: border-box; }
+body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif; margin: 0; padding: 0; background: #955e25; color: #1f2937; }
+
+/* Centered stage */
+.stage { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+
+/* Main card matching reference */
+.panel { width: 100%; max-width: 1100px; background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 32px; }
+.hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: center; }
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+
+.hero-illus { display: grid; gap: 16px; }
+.hero-illus h2 { font-size: 28px; color: #d97706; margin: 0; }
+.hero-illus p { color: #6b7280; margin: 0; line-height: 1.6; }
+.illus-box { width: 100%; height: 220px; background: linear-gradient(135deg, #eef2ff, #fef3c7); border-radius: 12px; display: grid; place-items: center; color: #9ca3af; }
+
+/* Auth card */
+.auth-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; }
+.auth-title { font-size: 20px; color: #374151; margin: 0 0 12px; font-weight: 600; }
+label { font-size: 13px; color: #6b7280; display: block; margin: 10px 0 6px; }
+input[type="text"], input[type="password"], input[type="date"], input[type="email"], select { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px; outline: none; transition: border-color .15s ease; }
+input:focus, select:focus { border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15); }
+
+.btn { appearance: none; border: 1px solid #d1d5db; background: #fff; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+.btn-primary { background: #f59e0b; border-color: #f59e0b; color: #fff; font-weight: 600; }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Utility */
+.grid { display: grid; gap: 12px; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.muted { color: #6b7280; }
+.badge { display:inline-block; padding: 2px 8px; border-radius: 999px; font-size:12px; border:1px solid #d1d5db; }
+
+/* Cards used in dashboard/faculty blocks */
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+
+/* Hide sections comfortably when not needed */
+#dash { margin-top: 20px; }
+
+/* Toast notification styles */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 1000;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 90%;
+    text-align: center;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast.error {
+    background: #ef4444;
+}
+
+.toast.success {
+    background: #10b981;
+}
+
+.toast.info {
+    background: #3b82f6;
+}
+
+.toast.warning {
+    background: #f59e0b;
+}
+
+/* History Page Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    margin: 0;
+    color: #1f2937;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.date-range {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.date-input {
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+}
+
+.date-input label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #4b5563;
+}
+
+.form-control {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.history-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.history-table th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+}
+
+.history-table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.no-data {
+    padding: 20px;
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .date-range {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .date-input {
+        width: 100%;
+    }
+    
+    .history-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Student Dashboard Updates */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.current-time {
+    font-family: monospace;
+    font-size: 1.1em;
+    color: #4b5563;
+    padding: 8px 0;
+    margin-bottom: 10px;
+}
+
+.status-container {
+    padding: 10px 0;
+}

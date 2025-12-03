@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Timetable | GeoAttendance</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <style>
+    .tt-container { margin-top: 16px; }
+    .tt-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .tt-range { font-weight:600; }
+    .tt-legend span { margin-right:8px; font-size:12px; }
+    .tt-table { width:100%; border-collapse:collapse; background:#fff; }
+    .tt-table th, .tt-table td { border:1px solid #e5e7eb; padding:8px; font-size:13px; text-align:center; }
+    .tt-day { text-align:left; font-weight:600; width:160px; }
+    .tt-slot-lunch { background:#fef3c7; }
+    .tt-slot-break { background:#e0f2fe; }
+    .tt-slot-class { background:#f9fafb; }
+    .tt-nav { margin-top:8px; display:flex; justify-content:flex-end; gap:8px; }
+  </style>
+  <script>
+    function toast(msg, type='info'){
+      const t=document.getElementById('toast');
+      t.textContent=msg;
+      t.className='toast show '+type;
+      setTimeout(()=>t.classList.remove('show'),2500);
+    }
+  </script>
+</head>
+<body>
+  <div class="stage">
+    <div class="panel">
+      <div class="header">
+        <h1>Weekly Timetable</h1>
+        <div class="header-actions">
+          <button class="btn" type="button" onclick="window.history.back()">Back to Student Page</button>
+        </div>
+      </div>
+
+      <div class="card grid tt-container">
+        <div class="tt-header">
+          <div>
+            <div class="muted">Presidency University, Bengaluru</div>
+            <div id="ttWeekRange" class="tt-range">This Week</div>
+          </div>
+        </div>
+
+        <table class="tt-table">
+          <thead>
+            <tr>
+              <th>Day / Hour</th>
+              <th>9:00 - 9:50</th>
+              <th>9:50 - 10:40</th>
+              <th>10:40 - 10:50</th>
+              <th>10:50 - 11:40</th>
+              <th>11:40 - 12:30</th>
+              <th>12:30 - 1:20</th>
+              <th>1:20 - 2:10</th>
+              <th>2:10 - 2:20</th>
+              <th>2:20 - 3:10</th>
+              <th>3:10 - 4:00</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- You can edit subjects in these cells as needed -->
+            <tr>
+              <td class="tt-day">Monday</td>
+              <td class="tt-slot-class">NLP</td>
+              <td class="tt-slot-class">DBMS</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Java Full Stack</td>
+              <td class="tt-slot-class">Python</td>
+              <td class="tt-slot-lunch">Lunch</td>
+              <td class="tt-slot-class">Cloud Security</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Generative AI</td>
+              <td class="tt-slot-class">Maths M1</td>
+            </tr>
+            <tr>
+              <td class="tt-day">Tuesday</td>
+              <td class="tt-slot-class">DBMS</td>
+              <td class="tt-slot-class">Java Full Stack</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Python</td>
+              <td class="tt-slot-class">NLP</td>
+              <td class="tt-slot-lunch">Lunch</td>
+              <td class="tt-slot-class">Generative AI</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Maths M1</td>
+              <td class="tt-slot-class">Cloud Security</td>
+            </tr>
+            <tr>
+              <td class="tt-day">Wednesday</td>
+              <td class="tt-slot-class">Java Full Stack</td>
+              <td class="tt-slot-class">Python</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">DBMS</td>
+              <td class="tt-slot-class">Cloud Security</td>
+              <td class="tt-slot-lunch">Lunch</td>
+              <td class="tt-slot-class">Maths M1</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">NLP</td>
+              <td class="tt-slot-class">Generative AI</td>
+            </tr>
+            <tr>
+              <td class="tt-day">Thursday</td>
+              <td class="tt-slot-class">Python</td>
+              <td class="tt-slot-class">NLP</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Generative AI</td>
+              <td class="tt-slot-class">DBMS</td>
+              <td class="tt-slot-lunch">Lunch</td>
+              <td class="tt-slot-class">Java Full Stack</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Cloud Security</td>
+              <td class="tt-slot-class">Maths M1</td>
+            </tr>
+            <tr>
+              <td class="tt-day">Friday</td>
+              <td class="tt-slot-class">Cloud Security</td>
+              <td class="tt-slot-class">Generative AI</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Maths M1</td>
+              <td class="tt-slot-class">Java Full Stack</td>
+              <td class="tt-slot-lunch">Lunch</td>
+              <td class="tt-slot-class">Python</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">DBMS</td>
+              <td class="tt-slot-class">NLP</td>
+            </tr>
+            <tr>
+              <td class="tt-day">Saturday</td>
+              <td class="tt-slot-class">Maths M1</td>
+              <td class="tt-slot-class">Cloud Security</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">NLP</td>
+              <td class="tt-slot-class">Generative AI</td>
+              <td class="tt-slot-lunch">Lunch</td>
+              <td class="tt-slot-class">DBMS</td>
+              <td class="tt-slot-break">Break</td>
+              <td class="tt-slot-class">Python</td>
+              <td class="tt-slot-class">Java Full Stack</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</body>
+</html>

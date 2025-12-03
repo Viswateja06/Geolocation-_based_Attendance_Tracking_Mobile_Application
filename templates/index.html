@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoAttendance</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <!-- Inline styles removed; using /static/styles.css -->
+  <script>
+    // Simple toast
+    function toast(msg, type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>t.classList.remove('show'),2500);}    
+  </script>
+</head>
+<body>
+  <div class="stage">
+    <div class="panel">
+      <div class="hero">
+        <div class="hero-illus">
+          <div class="illus-box">Illustration</div>
+          <div>
+            <h2>Go digital with Present Sir</h2>
+            <p>Present is a web based attendance system tailored to meet tertiary institutions needs.</p>
+          </div>
+        </div>
+        <div id="authCard" class="auth-card grid">
+          <div class="auth-title">Login to your account to continue</div>
+          <div>
+            <label for="loginName">Email / Name</label>
+            <input type="text" id="loginName" placeholder="E.g me@kuc.com.edu" />
+          </div>
+          <div>
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="Password" />
+          </div>
+          <div class="row">
+            <button class="btn btn-primary" id="loginBtn">Login</button>
+          </div>
+          <hr />
+          <div class="two">
+            <div>
+              <label for="regName">Register - Name</label>
+              <input type="text" id="regName" placeholder="Your name" />
+            </div>
+            <div>
+              <label for="regPassword">Register - Password</label>
+              <input type="password" id="regPassword" placeholder="Password" />
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn" id="registerBtn">Register</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Faculty Panel -->
+      <div id="facultyPanel" class="card grid">
+      <h2>👩‍🏫 Faculty Access</h2>
+      <div class="two">
+        <div>
+          <label for="facName">Faculty Name</label>
+          <input type="text" id="facName" placeholder="FacultyAdmin" />
+        </div>
+        <div>
+          <label for="facPassword">Faculty Password</label>
+          <input type="password" id="facPassword" placeholder="admin123" />
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary" id="facLoginBtn">Login (Faculty)</button>
+      </div>
+      <div id="facultyViews" style="display:none;" class="grid">
+        <div class="card grid">
+          <h3>All Students</h3>
+          <pre id="facStudents" class="muted">-</pre>
+        </div>
+        <div class="card grid">
+          <div class="row">
+            <label for="facDate">Date</label>
+            <input type="date" id="facDate" />
+            <button class="btn" id="facLoadBtn">Load Attendance</button>
+          </div>
+          <pre id="facAttendance" class="muted">-</pre>
+        </div>
+      </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="dash" class="grid" style="display:none;">
+      <div class="card grid">
+        <div class="row" style="justify-content: space-between; align-items: center;">
+          <div>
+            <div class="muted">Logged in as</div>
+            <div id="studentName">-</div>
+          </div>
+          <button class="btn" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <div class="card grid">
+        <div class="row">
+          <button class="btn" id="getLocationBtn">Use Current Location</button>
+          <span class="muted" id="locText">Waiting for location...</span>
+        </div>
+        <div class="row">
+          <button class="btn btn-success" id="studentCheckBtn">Check In / Out</button>
+          <span class="badge" id="statusBadge">-</span>
+        </div>
+      </div>
+
+      <div class="card grid">
+        <div class="muted">Today's Status</div>
+        <pre id="todayStatus" class="muted">-</pre>
+      </div>
+
+      <div class="card grid">
+        <div class="row">
+          <div>
+            <label for="histStart">Start Date</label>
+            <input type="date" id="histStart" />
+          </div>
+          <div>
+            <label for="histEnd">End Date</label>
+            <input type="date" id="histEnd" />
+          </div>
+          <button class="btn" id="loadHistoryBtn">Load History</button>
+        </div>
+        <pre id="historyList" class="muted">-</pre>
+      </div>
+
+      
+
+      <div class="card grid">
+        <div>
+          <label>Upload / Update Profile Photo</label>
+          <input type="file" id="photoFile" accept="image/*" />
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" id="uploadBtn">Upload Photo</button>
+          <a class="btn" id="viewPhotoBtn" target="_blank">View Photo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</body>
+</html>

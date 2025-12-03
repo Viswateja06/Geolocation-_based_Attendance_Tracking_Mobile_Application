@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faculty | GeoAttendance</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script>
+    function toast(msg, type='info'){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>t.classList.remove('show'),2500);}  
+  </script>
+</head>
+<body>
+  <div class="stage">
+    <div class="panel">
+      <div class="hero">
+        <div class="hero-illus">
+          <div class="illus-box">Faculty</div>
+          <div>
+            <h2>Manage attendance</h2>
+            <p>View students, their daily status, and browse attendance history by date.</p>
+          </div>
+        </div>
+        <div class="auth-card grid">
+          <div class="auth-title">Faculty Login</div>
+          <div>
+            <label for="facName">Faculty Name or Email</label>
+            <input type="text" id="facName" placeholder="Enter faculty name or email" />
+          </div>
+          <div>
+            <label for="facPassword">Password</label>
+            <input type="password" id="facPassword" placeholder="admin123" />
+          </div>
+          <div class="row">
+            <button class="btn btn-primary" id="facLoginBtn">Login</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="facultyViews" style="display:none;" class="grid">
+        <div class="card grid">
+          <div class="row">
+            <label for="facDate">Date</label>
+            <input type="date" id="facDate" />
+            <button class="btn" id="facLoadBtn">Load Attendance</button>
+          </div>
+          <pre id="facAttendance" class="muted">-</pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="/static/faculty.js"></script>
+</body>
+</html>
